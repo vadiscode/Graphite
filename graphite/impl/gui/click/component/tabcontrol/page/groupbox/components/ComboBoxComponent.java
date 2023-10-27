@@ -110,7 +110,7 @@ public final class ComboBoxComponent extends Component implements Expandable, Pr
                         selected = Objects.equals(value, selectedValuesString);
                     }
 
-                    int color = selected ? Theme.getUIColor() : 0xFFc9c9da;
+                    int color = selected ? Theme.getUIColor() : 0xFFC9C9DA;
 
                     if (elementHovered)
                         RenderUtil.drawRect(valuesXPos, valuesYPos, valuesXPos + valuesWidth, valuesYPos + 6.5, new Color(54, 54, 64).getRGB());

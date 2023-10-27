@@ -66,18 +66,14 @@ public final class SliderComponent extends Component implements Predicated {
             final double max = this.maxGetter.get();
             final double range = max - min;
 
-            String sValue = this.displayStringGetter.get();
-            final float sValueWidth = valueFontRenderer.getWidth(sValue);
+            String valueStr = this.displayStringGetter.get();
+            final float valueStrWidth = valueFontRenderer.getWidth(valueStr);
 
             switch (representationGetter.get()) {
-                case PERCENTAGE:
-                    sValue += '%';
-                    break;
-                case MILLISECONDS:
-                    sValue += "ms";
-                    break;
-                case DISTANCE:
-                    sValue += 'm';
+                case PERCENTAGE:  valueStr += '%'; break;
+                case MILLISECONDS: valueStr += "ms"; break;
+                case DISTANCE: valueStr += 'm'; break;
+                case DEGREES: valueStr += '°'; break;
             }
 
             if (this.sliding) {
@@ -96,7 +92,7 @@ public final class SliderComponent extends Component implements Predicated {
             RenderUtil.drawGradientRect(x + .5, y + 5.5, x + width - .5, y + height - .5, false, new Color(38,38,48).getRGB(), new Color(53,53,60).getRGB());
             RenderUtil.drawGradientRect(x + .5, y + 5.5, x + width * percentage - .5, y + height - .5, false, Theme.getUIColor(), ColourUtil.darker(Theme.getUIColor(), 0.65));
 
-            valueFontRenderer.drawStringWithOutline(sValue, (float) ((float) x + width * percentage - (sValueWidth / 1.8F)), (float) ((float) y + height), new Color(205, 205, 205).getRGB(), new Color(0, 0, 0, 130).getRGB());
+            valueFontRenderer.drawStringWithOutline(valueStr, (float) ((float) x + width * percentage - (valueStrWidth / 1.8F)), (float) ((float) y + height), new Color(205, 205, 205).getRGB(), new Color(0, 0, 0, 130).getRGB());
         }
 
         {

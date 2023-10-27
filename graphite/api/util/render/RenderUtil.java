@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderUtil {
 	protected static float zLevel;
-	
+
     public static void drawRect(double startX, double startY, double endX, double endY, int color) {
         float alpha = (float) (color >> 24 & 255) / 255.0F;
         float red = (float) (color >> 16 & 255) / 255.0F;
@@ -18,7 +18,7 @@ public class RenderUtil {
         final BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
         bufferbuilder.pos(startX, endY, 0.0D).color(red, green, blue, alpha).endVertex();
         bufferbuilder.pos(endX, endY, 0.0D).color(red, green, blue, alpha).endVertex();
@@ -28,15 +28,15 @@ public class RenderUtil {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
     }
-    
+
     public static void drawBorderedRect(double startX, double startY, double endX, double endY, double lineSize, int color, int borderColor) {
-        drawRect(startX, startY, endX, endY, color);        
+        drawRect(startX, startY, endX, endY, color);
         drawRect(startX, startY, startX + lineSize, endY, borderColor);
         drawRect(endX - lineSize, startY, endX, endY, borderColor);
         drawRect(startX, endY - lineSize, endX, endY, borderColor);
         drawRect(startX, startY, endX, startY + lineSize, borderColor);
     }
-    
+
     public static void drawGradientRect(double left, double top, double right, double bottom, boolean sideways, int startColor, int endColor) {
         float f = (float) (startColor >> 24 & 255) / 255.0F;
         float f1 = (float) (startColor >> 16 & 255) / 255.0F;
@@ -50,23 +50,16 @@ public class RenderUtil {
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(7425);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        if (sideways) {
-            bufferbuilder.pos(left, top, zLevel).color(f1, f2, f3, f).endVertex();
-            bufferbuilder.pos(left, bottom, zLevel).color(f1, f2, f3, f).endVertex();
-            bufferbuilder.pos(right, bottom, zLevel).color(f5, f6, f7, f4).endVertex();
-            bufferbuilder.pos(right, top, zLevel).color(f5, f6, f7, f4).endVertex();
-        } else {
-            bufferbuilder.pos(right, top, zLevel).color(f1, f2, f3, f).endVertex();
-            bufferbuilder.pos(left, top, zLevel).color(f1, f2, f3, f).endVertex();
-            bufferbuilder.pos(left, bottom, zLevel).color(f5, f6, f7, f4).endVertex();
-            bufferbuilder.pos(right, bottom, zLevel).color(f5, f6, f7, f4).endVertex();
-        }
+        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.pos(sideways ? left : right, top, zLevel).color(f1, f2, f3, f).endVertex();
+        bufferbuilder.pos(left, sideways ? bottom : top, zLevel).color(f1, f2, f3, f).endVertex();
+        bufferbuilder.pos(sideways ? right : left, bottom, zLevel).color(f5, f6, f7, f4).endVertex();
+        bufferbuilder.pos(right, sideways ? top : bottom, zLevel).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
-        GlStateManager.shadeModel(7424);
+        GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
@@ -88,14 +81,14 @@ public class RenderUtil {
         GL11.glLineWidth(1.0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBegin(GL11.GL_LINES);
-        
+
         float offset = 0F;
         for(float i = 0; i < size; i++) {
         	GL11.glVertex2f(offset, offset);
         	GL11.glVertex2f(size - offset, offset);
         	offset += 0.5F;
         }
-        
+
         GL11.glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
 
         GL11.glVertex2f(0, -.5F);
